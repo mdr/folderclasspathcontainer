@@ -8,5 +8,13 @@
             id="com.github.mdr.folderclasspathcontainer.FolderClasspathContainer">
       </classpathContainerInitializer>
    </extension>
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            id="com.github.mdr.folderclasspathcontainer.FolderClasspathContainer"
+            name="All Jar Files in a Folder"
+            class="com.github.mdr.folderclasspathcontainer.FolderClasspathContainerPage">
+      </classpathContainerPage>
+   </extension>
 
 </plugin>

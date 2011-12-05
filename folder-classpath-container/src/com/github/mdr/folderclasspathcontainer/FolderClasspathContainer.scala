@@ -6,15 +6,15 @@ import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core._
 import org.eclipse.core.runtime.Path
 
+object FolderClasspathContainer {
+
+  final val ID = "com.github.mdr.folderclasspathcontainer.FolderClasspathContainer"
+
+}
+
 class FolderClasspathContainer(path: IPath, project: IJavaProject) extends IClasspathContainer {
 
-  
-  private val folderName = path.removeFirstSegments(1).toString
-  
-  private val classpathFolder: File = {
-    val projectRoot = project.getProject.getLocation.makeAbsolute.toFile
-    new File(projectRoot, folderName)
-  }
+  private val folderInfo = FolderInfo(path)
 
   private object JarFilenameFilter extends FilenameFilter {
 
@@ -23,13 +23,14 @@ class FolderClasspathContainer(path: IPath, project: IJavaProject) extends IClas
   }
 
   def getClasspathEntries: Array[IClasspathEntry] = {
+    val classpathFolderFile = folderInfo.asFile(project)
     def makeLibraryEntry(jarFile: File) =
       JavaCore.newLibraryEntry(new Path(jarFile.getAbsolutePath), null, new Path("/"))
-    val jarFiles = Option(classpathFolder.listFiles(JarFilenameFilter)).getOrElse(Array())
+    val jarFiles = Option(classpathFolderFile.listFiles(JarFilenameFilter)).getOrElse(Array[File]())
     jarFiles.map(makeLibraryEntry)
   }
 
-  def getDescription = "Jars within " + folderName
+  def getDescription = "All Jars Within " + folderInfo.location
 
   def getKind = IClasspathContainer.K_APPLICATION
 
