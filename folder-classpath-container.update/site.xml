@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/folder-classpath-container.feature_1.0.0.qualifier.jar" id="folder-classpath-container.feature" version="1.0.0.qualifier"/>
+</site>
