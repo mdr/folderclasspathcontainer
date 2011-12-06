@@ -1,10 +1,12 @@
 package com.github.mdr.folderclasspathcontainer
 
-import org.eclipse.core.runtime._
-import org.eclipse.jdt.core.IJavaProject
 import java.io.File
-import org.eclipse.jdt.core.JavaCore
+
+import org.eclipse.core.runtime.IPath
+import org.eclipse.core.runtime.Path
 import org.eclipse.jdt.core.IClasspathEntry
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.JavaCore
 
 object FolderInfo {
 

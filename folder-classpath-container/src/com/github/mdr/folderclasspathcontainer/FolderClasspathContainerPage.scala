@@ -38,8 +38,6 @@ class FolderClasspathContainerPage
     this.project = project
   }
 
-//  override def isPageComplete = Option(folderCombo).exists { fc => validate(fc.getText).isEmpty }
-
   def createControl(parent: Composite) {
     val composite = new Composite(parent, SWT.NULL)
     composite.setLayout(new GridLayout)

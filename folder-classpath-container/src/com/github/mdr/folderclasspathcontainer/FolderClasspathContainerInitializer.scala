@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.ClasspathContainerInitializer
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
-import java.util.logging.Logger
 
 class FolderClasspathContainerInitializer extends ClasspathContainerInitializer {
 

@@ -1,4 +1,8 @@
 Folder Classpath Container
 ==========================
 
-A classpath container that can be configured to point to a folder within the project, and automatically adds all the .jar files to the classpath.
+Adds a new classpath container type to Eclipse that adds all the .jar files in a given folder to the classpath.
+
+Inspired by:
+
+  http://www.ibm.com/developerworks/opensource/tutorials/os-eclipse-classpath/index.html

@@ -1,22 +1,19 @@
 package com.github.mdr.folderclasspathcontainer
 
-import scala.PartialFunction._
-import org.eclipse.jdt.ui.actions.SelectionDispatchAction
-import org.eclipse.ui.IWorkbenchSite
-import org.eclipse.jface.viewers.IStructuredSelection
-import org.eclipse.core.runtime.IAdaptable
-import org.eclipse.core.resources.IResource
-import org.eclipse.core.resources.IFile
+import scala.PartialFunction.cond
+import scala.PartialFunction.condOpt
+
 import org.eclipse.core.resources.IFolder
-import org.eclipse.jdt.core.JavaCore
-import org.eclipse.ui.IObjectActionDelegate
-import org.eclipse.jface.viewers.ISelection
-import org.eclipse.core.resources.IProject
-import org.eclipse.jface.action.IAction
-import org.eclipse.ui.IWorkbenchPart
-import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.IClasspathContainer
+import org.eclipse.core.resources.IResource
+import org.eclipse.core.runtime.IAdaptable
 import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.JavaCore
+import org.eclipse.jface.action.IAction
+import org.eclipse.jface.viewers.ISelection
+import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.ui.IObjectActionDelegate
+import org.eclipse.ui.IWorkbenchPart
 
 class AddToClasspathAction extends IObjectActionDelegate {
 
@@ -67,19 +64,11 @@ class AddToClasspathAction extends IObjectActionDelegate {
       val project = JavaCore.create(folder.getProject)
       val folderLocation = FolderInfo.maybeMakeRelative(folder.getLocation.toString, project)
       val containerEntry = FolderInfo.fromLocation(folderLocation).asClasspathEntry
-      val classpathEntries = project.getRawClasspath
-      val newClasspathEntries = (classpathEntries :+ containerEntry).distinct
+      val newClasspathEntries = project.getRawClasspath :+ containerEntry
       project.setRawClasspath(newClasspathEntries, null);
     }
 
-  private def selectionObjectToProject(selectionElement: Object): Option[IProject] = selectionElement match {
-    case project: IProject => Some(project)
-    case adaptable: IAdaptable => adaptable.adaptToSafe[IProject]
-    case _ => None
-  }
-
-  def setActivePart(action: IAction, targetPart: IWorkbenchPart) {
-  }
+  def setActivePart(action: IAction, targetPart: IWorkbenchPart) { }
 
   private def selectedFolder(selection: ISelection): Option[IFolder] = {
     val adaptableOpt = condOpt(selection) {
