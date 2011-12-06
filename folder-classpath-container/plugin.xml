@@ -16,5 +16,22 @@
             class="com.github.mdr.folderclasspathcontainer.FolderClasspathContainerPage">
       </classpathContainerPage>
    </extension>
+<!--	       
+menubarPath="org.eclipse.jdt.ui.buildpath.menu" 
+-->
+
+   <extension point = "org.eclipse.ui.popupMenus">
+     <objectContribution
+        id="com.github.mdr.folderclasspathcontainer.AddToClasspathAction1"
+        objectClass="org.eclipse.core.resources.IFolder">
+	    <action id="com.github.mdr.folderclasspathcontainer.AddToClasspathAction"
+	       label="Add All Jars In Folder To Classpath"
+	       menubarPath="org.eclipse.jdt.ui.buildpath.menu"
+	       class="com.github.mdr.folderclasspathcontainer.AddToClasspathAction"	
+           definitionId="com.github.mdr.folderclasspathcontainer.AddToClasspathAction"
+	       enablesFor="1">
+	    </action>
+	 </objectContribution>
+	 </extension>
 
 </plugin>

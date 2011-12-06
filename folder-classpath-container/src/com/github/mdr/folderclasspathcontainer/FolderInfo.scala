@@ -3,31 +3,48 @@ package com.github.mdr.folderclasspathcontainer
 import org.eclipse.core.runtime._
 import org.eclipse.jdt.core.IJavaProject
 import java.io.File
+import org.eclipse.jdt.core.JavaCore
+import org.eclipse.jdt.core.IClasspathEntry
 
 object FolderInfo {
 
-  def apply(path: IPath): FolderInfo = {
+  def decode(path: IPath): Option[FolderInfo] = {
     val id = Option(path.segment(0)).getOrElse(
       throw new IllegalArgumentException("No id segment"))
-    if (id != FolderClasspathContainer.ID)
-      throw new IllegalArgumentException("Incorrect classpath container id: " + id)
-    var filePath = path.removeFirstSegments(1)
-    val firstFileSegment = Option(filePath.segment(0)).getOrElse(
-      throw new IllegalArgumentException("No file segment"))
-    if (firstFileSegment == ROOT_MARKER)
-      new FolderInfo("/" + filePath.removeFirstSegments(1))
+    if (id == FolderClasspathContainer.ID)
+      Some({
+        val filePath = path.removeFirstSegments(1)
+        val firstFileSegment = Option(filePath.segment(0)).getOrElse(
+          throw new IllegalArgumentException("No file segment"))
+        if (firstFileSegment == ROOT_MARKER)
+          new FolderInfo("/" + filePath.removeFirstSegments(1))
+        else
+          new FolderInfo(filePath.toString)
+      })
     else
-      new FolderInfo(filePath.toString)
+      None
   }
 
+  def fromLocation(location: String) = new FolderInfo(location)
+
   final val ROOT_MARKER = "-"
+
+  def maybeMakeRelative(location: String, project: IJavaProject): String = {
+    val projectRoot = project.getProject.getLocation
+    if (location startsWith projectRoot.toString) {
+      val suffix = location.substring(projectRoot.toString.length)
+      if (suffix startsWith "/") suffix.tail else suffix
+    } else
+      location
+  }
+
 }
 
-class FolderInfo(val location: String) {
+class FolderInfo private (val location: String) {
 
   import FolderInfo._
 
-  def asPath = {
+  def asEncodedPath = {
     val idPath = new Path(FolderClasspathContainer.ID)
     if (isAbsolute)
       idPath.append("/" + ROOT_MARKER + "/" + location)
@@ -37,12 +54,14 @@ class FolderInfo(val location: String) {
 
   private def isAbsolute = location startsWith "/"
 
-  def asFile(project: IJavaProject): File =
+  def asPath(project: IJavaProject): IPath =
     if (isAbsolute)
-      new File(location)
-    else {
-      val projectRoot = project.getProject.getLocation.makeAbsolute.toFile
-      new File(projectRoot, location)
-    }
+      new Path(location)
+    else
+      project.getProject.getLocation.append(location)
+
+  def asFile(project: IJavaProject): File = asPath(project).toFile
+
+  def asClasspathEntry: IClasspathEntry = JavaCore.newContainerEntry(asEncodedPath)
 
 }

@@ -9,8 +9,10 @@ import java.util.logging.Logger
 class FolderClasspathContainerInitializer extends ClasspathContainerInitializer {
 
   def initialize(containerPath: IPath, project: IJavaProject) {
-    val container = new FolderClasspathContainer(containerPath, project)
-    JavaCore.setClasspathContainer(containerPath, Array(project), Array(container), null)
+    for (folderInfo <- FolderInfo.decode(containerPath)) {
+      val container = new FolderClasspathContainer(folderInfo, project)
+      JavaCore.setClasspathContainer(containerPath, Array(project), Array(container), null)
+    }
   }
 
 }
